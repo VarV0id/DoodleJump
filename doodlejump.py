@@ -28,20 +28,27 @@ class DoodleJump:
         self.jump = 0
         self.gravity = 0
         self.xmovement = 0
+        self.salto = False
     
     def updatePlayer(self):
-        if not self.jump:        
+        key = pygame.key.get_pressed()
+
+        if not self.jump:      
             self.playery += self.gravity
             self.gravity += 1
         elif self.jump:
             self.playery -= self.jump
             self.jump -= 1
-        key = pygame.key.get_pressed()
+        if(self.salto == False):
+            if key[K_UP]:
+                    self.jump = 15
+                    self.gravity = 0
+                    self.salto = True
+            
         if key[K_RIGHT]:
             if self.xmovement < 10:
                 self.xmovement += 1
             self.direction = 0
-
         elif key[K_LEFT]:
             if self.xmovement > -10:
                 self.xmovement -= 1
@@ -75,7 +82,8 @@ class DoodleJump:
             player = pygame.Rect(self.playerx, self.playery, self.playerRight.get_width() - 10, self.playerRight.get_height())
             if rect.colliderect(player) and self.gravity and self.playery < (p[1] - self.cameray):
                 if p[2] != 2:
-                    self.jump = 15
+                    self.salto = False
+                    self.jump = 0
                     self.gravity = 0
                 else:
                     p[-1] = 1

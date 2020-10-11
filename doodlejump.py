@@ -161,8 +161,12 @@ class DoodleJump:
     def run(self):
         clock = pygame.time.Clock()
         self.generatePlatforms()
+
+        # Se inicializa el modulo de procesamiento de imagenes
         imagePro = ImageProcessing()
+
         while True:
+            # Se obtiene la accion realizada por el usuario mediante la camara.
             action = imagePro.procesarImagen()
             self.screen.fill((255,255,255))
             clock.tick(60)
@@ -183,7 +187,9 @@ class DoodleJump:
             self.drawPlatforms()
             if imagePro.beginGame:
                 
+                # Se hace interactuar al personaje con la accion realizada
                 self.updatePlayer(action)
+
             self.updatePlatforms()
             self.screen.blit(self.font.render(str(self.score), -1, (0, 0, 0)), (25, 25))
             pygame.display.flip() 

@@ -2,10 +2,6 @@ import pygame
 from pygame.locals import *
 import sys
 import random
-import numpy as np
-import cv2
-from pynput.keyboard import Key, Controller
-from ImageProcessing import ImageProcessing
 
 class DoodleJump:
     def __init__(self):
@@ -34,8 +30,9 @@ class DoodleJump:
         self.xmovement = 0
         self.salto = False
     
-    def updatePlayer(self, mode):
+    def updatePlayer(self):
         key = pygame.key.get_pressed()
+
         if not self.jump:      
             self.playery += self.gravity
             self.gravity += 1
@@ -43,16 +40,16 @@ class DoodleJump:
             self.playery -= self.jump
             self.jump -= 1
         if(self.salto == False):
-            if mode == 3:
+            if key[K_UP]:
                     self.jump = 15
                     self.gravity = 0
                     self.salto = True
             
-        if mode == 2:
+        if key[K_RIGHT]:
             if self.xmovement < 10:
                 self.xmovement += 1
             self.direction = 0
-        elif mode == 1:
+        elif key[K_LEFT]:
             if self.xmovement > -10:
                 self.xmovement -= 1
             self.direction = 1
@@ -161,16 +158,12 @@ class DoodleJump:
     def run(self):
         clock = pygame.time.Clock()
         self.generatePlatforms()
-        imagePro = ImageProcessing()
         while True:
-            action = imagePro.procesarImagen()
             self.screen.fill((255,255,255))
             clock.tick(60)
-            
             for event in pygame.event.get():
                 if event.type == QUIT:
                     sys.exit()
-                    
             if self.playery - self.cameray > 700:
                 self.cameray = 0
                 self.score = 0
@@ -181,13 +174,10 @@ class DoodleJump:
                 self.playery = 400
             self.drawGrid()
             self.drawPlatforms()
-            if imagePro.beginGame:
-                
-                self.updatePlayer(action)
+            self.updatePlayer()
             self.updatePlatforms()
             self.screen.blit(self.font.render(str(self.score), -1, (0, 0, 0)), (25, 25))
             pygame.display.flip() 
-    
 
 
 DoodleJump().run()
